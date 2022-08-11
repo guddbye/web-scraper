@@ -1,19 +1,24 @@
-import requests
 from bs4 import BeautifulSoup
+import requests
 
-URL = "https://en.wikipedia.org/wiki/The_Walking_Dead_(TV_series)"
 
-def get_citations_needed_count(url): 
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, "html.parser")
-    citations_needed_count = soup.find("span", {"id": "citations-needed-count"}).text
-    return citations_needed_count
+url = 'https://en.wikipedia.org/wiki/The_Walking_Dead_(TV_series)'
 
-def get_citations_needed_list(url):
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, "html.parser")
-    citations_needed_list = soup.find("div", {"id": "citations-needed-list"}).text
-    return citations_needed_list
+
+def get_citations_needed_count(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    list_results = soup.findAll("a", attrs={"title": "Wikipedia:Citation needed"})
+    print("Citations needed: ", len(list_results))
+
+
+def get_citations_needed_report(url):
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, "html.parser")
+    list_results = soup.findAll("a", attrs={"title": "Wikipedia:Citation needed"})
+    for item in list_results:
+        print(item.parent.parent.parent.text)
+
 
 get_citations_needed_count(url)
-get_citations_needed_list(url)
+get_citations_needed_report(url)
